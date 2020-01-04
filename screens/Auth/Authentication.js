@@ -6,7 +6,6 @@ import Card from '../../component/Card';
 import DefqultInput from '../../component/DefaultInput';
 import validate from '../../src/utility/validation';
 import gql from 'graphql-tag';
-import {createClient} from'../../Client'
 
 
 const LOGIN_M = gql`
@@ -144,7 +143,7 @@ class Authentication extends React.Component {
                 />
                 <Header title='Login'/>
                 <ScrollView>
-                    <View style={styles.loginContainer}>
+                    <View>
                         <Image style={styles.imageStyle}
                                source={require('../../assets/icons/Car-Repair-icon.png')}/>
 
@@ -200,8 +199,6 @@ class Authentication extends React.Component {
         );
     }
 }
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
