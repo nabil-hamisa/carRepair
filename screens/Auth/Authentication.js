@@ -193,8 +193,6 @@ class Authentication extends React.Component {
 
                             </View>
                         </Card>
-
-
                     </View>
                 </ScrollView>
 
