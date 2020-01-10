@@ -1,10 +1,10 @@
 import React from 'react';
 import {createAppContainer} from 'react-navigation';
-import TechnicienNavigator from'../navigation/TechnicienNavigator'
-import AuthentificationNavigation from '../navigation/AuthentificationNavigation';
-import AuthLoading from'../screens/Auth/AuthLoading'
-import {createSwitchNavigator}  from'react-navigation'
-import ManagerNavigation from '../navigation/ManagerNavigator';
+import TechnicienNavigator from './TechnicienNavigator'
+import AuthentificationNavigation from './AuthentificationNavigation';
+import AuthLoading from '../../screens/Auth/AuthLoading'
+import {createSwitchNavigator}  from 'react-navigation'
+import ManagerNavigation from './ManagerNavigator';
 
 const  Main = createSwitchNavigator(
     {

@@ -1,13 +1,8 @@
 import React from 'react';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
-import Authentication from'../screens/Auth/Authentication'
-import Register  from'../screens/Auth/Register'
+import Authentication from '../../screens/Auth/Authentication'
+import Register  from '../../screens/Auth/Register'
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import ManagerHome from '../screens/Manager/ManagerHome';
-import Cars from '../screens/Manager/ManagerCars';
-import AddCar from '../screens/Manager/MangerAddCar';
-import VehicleTechnician from '../screens/Manager/ManagerVehicleTechnician';
-import NominateTechnician from '../screens/Manager/ManagerNominateVehicleTechnician';
 const AuthentificationNavigation = createBottomTabNavigator({
         Authentication: {
             screen: Authentication,

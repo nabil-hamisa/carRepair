@@ -1,107 +1,108 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Text, Switch, StatusBar, TextInput, Image, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, Switch, StatusBar, Image, ScrollView} from 'react-native';
 import Header from '../../component/Header';
 import ButtonSmall from '../../component/ButtonSmall.js';
 import Card from '../../component/Card';
 import DefqultInput from '../../component/DefaultInput';
 import validate from '../../src/utility/validation';
-import gql from 'graphql-tag';
-
-
-const LOGIN_M = gql`
-    query ManagerLogin($username:String!,$password:String!){
-        managerLogin(data:{username:$username,password:$password}){token,
-            me{id,
-                firstName,
-                lastName,
-                username,
-                dob,
-                language
-            }
-        }
-    }
-`;
-
-;
-const LOGIN_MEC = gql`
-        query ManagerLogin($username:String!,$password:String!){
-          managerLogin(data:{username:$username,password:$password}){token,
-              me{id,
-                 firstName,
-                 lastName,
-                 username,
-                 dob,
-                 language
-                 }
-               }
-             }
-              `;
-
+import {connect} from 'react-redux';
+import {clearLoginErrors, login} from '../../src/Actions';
 class Authentication extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            controls: {
+                userName: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 5,
+                        maxLength: 20,
+                    },
+                },
+                firstName: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 2,
+                        maxLength: 20,
+                    },
+                },
+                lastName: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 2,
+                        maxLength: 20,
+                    },
+                },
+                password: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 5,
+                        maxLength: 20,
 
-    state = {
-        controls: {
-            userName: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 5,
-                    maxLength: 20,
+                    },
+                },
+                birthdate: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minAge: 18,
+                    },
                 },
             },
-            firstName: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 2,
-                    maxLength: 20,
-                },
-            },
-            lastName: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 2,
-                    maxLength: 20,
-                },
-            },
-            password: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 5,
-                    maxLength: 20,
+            dateT: '',
+            date: new Date(),
+            mode: 'date',
+            show: false,
+            dateValid: false,
+            loading: false,
+            isReported: false,
+            reportValue: '',
+            badReport: false,
+            goodReport: false,
+        }
 
-                },
-            },
-            birthdate: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minAge: 18,
-                },
-            },
-        },
-        dateT: '',
-        date: new Date(),
-        mode: 'date',
-        show: false,
-        dateValid: false,
-        loading: false,
-        isReported: false,
-        reportValue: '',
-        badReport: false,
-        goodReport: false,
-    };
+        this.login = this.login.bind(this);
+    }
 
     manSwitch = (value) => {
         this.setState({isManager: value});
     };
+    componentDidMount(): void {
+        console.log(this.props.loggedIn);
+        console.log(this.props.me.role);
+        if(this.props.loggedIn&& this.props.me.role){
+            this.props.navigation.navigate('manager');
+        }  if(this.props.loggedIn&& !this.props.me.role){
+            this.props.navigation.navigate('tech');
+        }
+
+    }
+    async login() {
+        console.log(this.props.error)
+        console.log(this.props.data)
+        console.log(this.props.loads)
+        console.log(this.props.stats)
+        const username = this.state.controls.userName.value;
+        const password = this.state.controls.password.value;
+        const {isManager} = this.state;
+        await this.props.login(username, password, isManager);
+        console.log(this.props.loggedIn, this.props.me.role);
+        if (this.props.loggedIn && this.props.me.role) {
+            this.props.navigation.navigate('manager');
+        }else if(this.props.loggedIn&& !this.props.me.role){
+            this.props.navigation.navigate('tech');
+        }
+
+    }
 
     updateInputState = (key, value) => {
         this.setState(prevState => {
@@ -123,17 +124,7 @@ class Authentication extends React.Component {
 
     };
 
-
-
-
-    /*    if (this.state.isManager) {
-            this.props.navigation.navigate('manager');
-        } else {
-            this.props.navigation.navigate('tech');
-        }*/
-
-
-    render(props) {
+    render(props){
         return (
 
             <View style={styles.container}>
@@ -182,13 +173,13 @@ class Authentication extends React.Component {
                                     disabled={
                                         !this.state.controls.userName.valid ||
                                         !this.state.controls.password.valid ||
-                                        this.state.loading
+                                        this.props.loadsLogin
 
                                     }
-                                    onPress={()=>{  }}
+                                    onPress={this.login}
                                     style={styles.submitButton}>
-                                    {this.state.loading && <Text>Loading...</Text>}
-                                    {!this.state.loading && <Text>LOG IN</Text>}</ButtonSmall>
+                                    { this.props.loadsLogin && <Text>Loading...</Text>}
+                                    {! this.props.loadsLogin && <Text>LOG IN</Text>}</ButtonSmall>
 
                             </View>
                         </Card>
@@ -248,8 +239,22 @@ const styles = StyleSheet.create({
 
 });
 
+const mapStateToProps = state =>({
+    error:state.errors.login,
+    loggedIn:state.loggedIn,
+    isManager:state.isManager,
+    loadsLogin:state.loads.login,
+    data: state.data,
+    loads: state.loads,
+    stats:state.stats,
+    me:state.me
+});
+const mapDispatchToProps = dispatch=>({
+    clearLoginErrors:()=>dispatch(clearLoginErrors()),
+    login:(username,password,isManager)=>dispatch(login({username,password,isManager}))
+});
 
-export default Authentication;
+export default connect(mapStateToProps,mapDispatchToProps)(Authentication);
 
 
 

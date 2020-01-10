@@ -1,77 +1,91 @@
 import React from 'react';
-import {View, ActivityIndicator, StyleSheet, ScrollView, Text, StatusBar, TextInput} from 'react-native';
+import {View, StyleSheet, ScrollView, Text, StatusBar} from 'react-native';
 import Header from '../../component/Header';
 import Card from '../../component/Card';
 import ButtonSmall from '../../component/ButtonSmall';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import validate from '../../src/utility/validation';
-import gql from 'graphql-tag';
-import {graphql} from 'react-apollo';
 import DefqultInput from '../../component/DefaultInput';
 import VButton from '../../component/VButton';
 import {Dialog} from 'react-native-simple-dialogs';
+import {connect} from 'react-redux';
+import {register, clearRegisterErrors} from '../../src/Actions';
 
 
 class Register extends React.Component {
-    state = {
-        controls: {
-            userName: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 5,
-                    maxLength: 20,
+    constructor(props) {
+        super(props);
+        this.state = {
+            controls: {
+                userName: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 5,
+                        maxLength: 20,
+                    },
                 },
-            },
-            firstName: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 2,
-                    maxLength: 20,
+                firstName: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 2,
+                        maxLength: 20,
+                    },
                 },
-            },
-            lastName: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 2,
-                    maxLength: 20,
+                lastName: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 2,
+                        maxLength: 20,
+                    },
                 },
-            },
-            password: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minLength: 5,
-                    maxLength: 20,
+                password: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minLength: 5,
+                        maxLength: 20,
 
+                    },
+                },
+                birthdate: {
+                    touched: false,
+                    value: '',
+                    valid: false,
+                    validationRules: {
+                        minAge: 18,
+                    },
                 },
             },
-            birthdate: {
-                touched: false,
-                value: '',
-                valid: false,
-                validationRules: {
-                    minAge: 18,
-                },
-            },
-        },
-        dateT: '',
-        date: new Date(),
-        mode: 'date',
-        show: false,
-        dateValid: false,
-        loading: false,
-        isReported: false,
-        reportValue: '',
-        badReport: false,
-        goodReport: false,
-    };
+            dateT: '',
+            date: new Date(),
+            mode: 'date',
+            show: false,
+            dateValid: false,
+            loading: false,
+            isReported: false,
+            reportValue: '',
+            badReport: false,
+            goodReport: false,
+        };
+        this.register = this.register.bind(this);
+    }
+
+    componentDidMount(): void {
+        if (this.props.loggedIn && this.props.me.role) {
+            this.props.navigation.navigate('manager');
+        } else if (this.props.loggedIn && !this.props.me.role) {
+            this.props.navigation.navigate('tech');
+        }
+    }
+
+
     updateInputState = (key, value) => {
         this.setState(prevState => {
 
@@ -117,60 +131,35 @@ class Register extends React.Component {
         this.show('date');
     };
 
-    sumbmit = async () => {
-        this.setState({loading: true, badReport: false, goodReport: false, reportValue: ''});
-        console.log(this.state.controls.birthdate.value);
-        let days = new Date(this.state.controls.birthdate.value).getDate();
-        let month = new Date(this.state.controls.birthdate.value).getMonth();
-        let year = new Date(this.state.controls.birthdate.value).getFullYear();
-        let fulldate = year + '-' + month + '-' + days;
+
+    async register() {
+        let date = new Date(this.state.controls.birthdate.value);
         let username = this.state.controls.userName.value.toString();
         let firstName = this.state.controls.firstName.value.toString();
         let lastName = this.state.controls.lastName.value.toString();
         let password = this.state.controls.password.value.toString();
+        let repassword=password
         let language = 'en';
-        console.log(fulldate);
-        await this.props.register(
-            username,
-            firstName,
-            lastName,
-            fulldate,
-            password,
-            language,
-        ).then(({data}) => {
-            this.setState(
-                {
-                    loading: false,
-                    isReported: true,
-                    goodReport: true,
-                    badReport: false,
-                    reportValue: 'Your Account Has Been Created!',
-                });
-            console.log(data);
-        }).catch(
-            (e => {
-                this.setState({loading: false, goodReport: false, badReport: true, isReported: true});
-                e.graphQLErrors.map(({message}, i) => {
-                    console.log(i, message);
-                    if (message === '8') {
-                        this.setState({
-                            reportValue: 'UserName Already  Exist !',
-                        });
-                    } else {
-                        this.setState({
-                            reportValue: 'ERROR !',
-                        });
-                    }
-                });
-                console.log(e.graphQLErrors);
-                console.log('-------------------------');
-                console.log(e.networkError.result.errors);
-            }),
-        );
+        let dob=date;
+        console.log(username,firstName,lastName,password,repassword,language,date);
+        await this.props.register({username,firstName,lastName,password,dob,language,});
+        console.log(this.props.error);
+
+        if (this.props.loggedIn && this.props.me.role) {
+            this.props.navigation.navigate('manager');
+        } else if (this.props.loggedIn && !this.props.me.role) {
+            this.props.navigation.navigate('tech');
+        }
+        console.log(this.props.loggedIn)
+        this.setState({
+            loading: false,
+        });
+
 
     };
 
     render(props) {
+
         const {show, date, mode} = this.state;
         return (
             <View style={styles.container}>
@@ -240,7 +229,7 @@ class Register extends React.Component {
                             }{
                             }
                                 <ButtonSmall
-                                    onPress={this.sumbmit}
+                                    onPress={this.register}
                                     disabled={
                                         !this.state.controls.userName.valid ||
                                         !this.state.controls.birthdate.valid ||
@@ -263,12 +252,7 @@ class Register extends React.Component {
                     rounded={true}
                     visible={this.state.isReported}
                     title="Result"
-                    onTouchOutside={() => {
-                        this.setState({isReported: false});
-                        if (this.state.goodReport) {
-                            this.props.navigation.navigate('Authentication');
-                        }
-                    }}>
+                    onTouchOutside={this.submit}>
                     <View>
                         <Text>{this.state.reportValue}</Text>
                     </View>
@@ -303,38 +287,17 @@ const styles = StyleSheet.create({
     },
 
 });
+const mapStateToProps = state => ({
+    error: state.errors,
+    loggedIn: state.loggedIn,
+    isManager: state.isManager,
+    loadsLogin: state.loads.login,
+    me: state.me,
 
+});
+const mapDispatchToProps = (dispatch) => ({
+    clearRegisterErrors: () => dispatch(clearRegisterErrors()),
+    register: (payload) => dispatch(register(payload)),
+});
 
-    export default graphql(gql`
-        mutation Register($username:String!,$firstName:String!,$lastName:String!,$password:String!,$dob:DateTime!,$language:String!){
-            register(data:{
-                username:$username,firstName:$firstName,lastName:$lastName,password:$password,dob:$dob,language:$language
-            }){
-                token,
-                me{
-                    id
-                    firstName,
-                    lastName,
-                    username,
-                    dob,
-                    language
-                }
-            }
-        }
-`, {
-        props: ({mutate}) => ({
-            register: (username, firstName, lastName, dob, password, language) => mutate({
-                variables: {
-                    username,
-                    firstName,
-                    lastName,
-                    dob,
-                    password,
-                    language,
-                },
-            }),
-        }),
-    },
-)
-(Register)
-;
+export default connect(mapStateToProps,mapDispatchToProps)(Register);

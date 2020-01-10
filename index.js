@@ -5,15 +5,6 @@
 
 import React from 'react';
 import { AppRegistry } from 'react-native';
-import App from './App';
+import App from './src/App';
 import {name as appName} from './app.json';
-
-
-/*const client = new ApolloClient();
-const App = () => (
-    <ApolloProvider client={client}>
-        <Apps/>
-    </ApolloProvider>
-);*/
-
 AppRegistry.registerComponent(appName, () => App);

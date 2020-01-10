@@ -1,15 +1,15 @@
-import React from 'react';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
-import Cars from '../screens/Manager/ManagerCars';
-import AddCar from '../screens/Manager/MangerAddCar';
-import ManagerHome from '../screens/Manager/ManagerHome';
-import VehicleTechnician from '../screens/Manager/ManagerVehicleTechnician';
-import NominateTechnician from '../screens/Manager/ManagerNominateVehicleTechnician';
+import React from 'react';
+import AddOrder from '../../screens/Technicien/TechnicianAddOrder';
+import doneCar from '../../screens/Technicien/TechnicianCar Done';
+import editOrder from '../../screens/Technicien/TechnicianEditOrder';
+import TechnicianHome from '../../screens/Technicien/TechnicianHome';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import profile from '../../screens/Manager/profile';
 
-const ManagerNavigation = createBottomTabNavigator({
+const TechnicienNavigator = createBottomTabNavigator({
         Home: {
-            screen: ManagerHome,
+            screen: TechnicianHome,
             navigationOptions: {
                 tabBarLabel: 'Home',
                 tabBarIcon: ({tintColor}) => (
@@ -18,44 +18,43 @@ const ManagerNavigation = createBottomTabNavigator({
             },
         },
         Cars: {
-            screen: Cars,
+            screen: AddOrder,
             navigationOptions: {
-                tabBarLabel: 'Cars',
+                tabBarLabel: 'Add Order',
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name={'car'} size={24}/>
+                    <Icon color={tintColor} name={'truck-loading'} size={24}/>
                 ),
             },
         }
         ,
         AddCars: {
-            screen: AddCar,
+            screen: editOrder,
             navigationOptions: {
-                tabBarLabel: 'Add Cars',
+                tabBarLabel: 'Edit Order',
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name={'car-crash'} size={24}/>
+                    <Icon color={tintColor} name={'edit'} size={24}/>
                 ),
             },
         }
         ,
         AllTech: {
-            screen: VehicleTechnician,
+            screen: doneCar,
             navigationOptions: {
-                tabBarLabel: 'Technician',
+                tabBarLabel: 'Car Repaired',
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name={'users'} size={24}/>
-                ),
-            },
-        }
-        ,
-        NominateTech: {
-            screen: NominateTechnician,
-            navigationOptions: {
-                tabBarLabel: 'Nominate',
-                tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name={'tools'} size={24}/>
+                    <Icon color={tintColor} name={'calendar-check'} size={24}/>
                 ),
             },
         },
+        profile:{
+            screen:profile,
+            navigationOptions: {
+                tabBarLabel: 'Profile',
+                tabBarIcon: ({tintColor}) => (
+                    <Icon color={tintColor} name={'user'} size={24}/>
+                ),
+            },
+        }
     }, {
         initialRouteName: 'Home',
         navigationOptions: {},
@@ -68,5 +67,6 @@ const ManagerNavigation = createBottomTabNavigator({
 
         },
     },
-);
-export  default ManagerNavigation;
+    )
+;
+export  default   TechnicienNavigator;
