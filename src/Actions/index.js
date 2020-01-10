@@ -1,4 +1,4 @@
-import ApolloClient, {cache} from '../ApolloClient';
+import ApolloClient, {cache, createClient} from '../ApolloClient';
 import * as C from '../Consts';
 import * as GQL from '../Consts/GraphQL';
 
@@ -41,6 +41,7 @@ export const login = payload => async dispatch => {
             query: GQL.MECHANICIAN_LOGIN,
             variables: {username, password},
         })).data.mechanicianLogin;
+        createClient(login.token);
         dispatch(loginSuccess({token: login.token, me: {...login.me, role: isManager}}));
     } catch (e) {
         let errorNumber = parseInt(e.message.replace('GraphQL error: ', ''));
@@ -48,11 +49,13 @@ export const login = payload => async dispatch => {
     }
 };
 export const getStats = () => async dispatch => {
+    console.log("herep");
     dispatch(initGetStats());
     try {
         let data = (await ApolloClient().query({
             query: GQL.GET_STATS,
         })).data.stats;
+        console.log(data);
         dispatch(getStatsSuccess(data));
     } catch (e) {
         let errorNumber = parseInt(e.message.replace('GraphQL error: ', ''));

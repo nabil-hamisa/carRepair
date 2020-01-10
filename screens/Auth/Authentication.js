@@ -69,7 +69,7 @@ class Authentication extends React.Component {
             badReport: false,
             goodReport: false,
         }
-
+        console.log({loggedIn:props.loggedIn,me:props.me});
         this.login = this.login.bind(this);
     }
 

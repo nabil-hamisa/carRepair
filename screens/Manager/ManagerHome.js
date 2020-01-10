@@ -10,19 +10,18 @@ class ManagerHome extends React.Component {
         super(props);
         this.getData = this.getData.bind(this);
         this.state = {
-            items: [{title: 'title1', value: '0'}, {title: 'title2', value: '1'}, {
-                title: 'title1',
-                value: '0',
-            }, {title: 'title1', value: '0'}],
+            items: [{title: 'mechanicians', value: this.props.stats.mechanicians?this.props.stats.mechanicians.toString():'0'},
+                {title: 'cars', value: this.props.stats.cars?this.props.stats.cars.toString():'1'}, {
+                title: 'clients',
+                value: this.props.stats.clients?this.props.stats.clients.toString():'0',
+            }, {title: 'income', value: this.props.stats.income?this.props.stats.income.toString():'0'}],
             isLoading: false,
         }
 
     }
 
     getData= async () => {
-        console.log(this.props.stats)
         await this.props.getStats();
-        console.log(this.props.stats)
 
 
 
@@ -30,8 +29,18 @@ class ManagerHome extends React.Component {
 
      componentDidMount(): void {
 
-
+        this.props.getStats();
     }
+    componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
+        if(prevProps.stats !== this.props.stats)
+            this.setState({
+                items: [{title: 'mechanicians', value: this.props.stats.mechanicians},
+                    {title: 'cars', value: this.props.stats.cars}, {
+                        title: 'clients',
+                        value: this.props.stats.clients,
+                    }, {title: 'income', value: this.props.stats.income}]
+            })
+     }
 
     renderStatus = ({item}) => {
         return (
