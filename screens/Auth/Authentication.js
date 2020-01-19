@@ -7,6 +7,7 @@ import DefqultInput from '../../component/DefaultInput';
 import validate from '../../src/utility/validation';
 import {connect} from 'react-redux';
 import {clearLoginErrors, login} from '../../src/Actions';
+import {Dialog} from 'react-native-simple-dialogs';
 class Authentication extends React.Component {
     constructor(props) {
         super(props);
@@ -15,46 +16,19 @@ class Authentication extends React.Component {
                 userName: {
                     touched: false,
                     value: '',
-                    valid: false,
+                    valid: true,
                     validationRules: {
                         minLength: 5,
                         maxLength: 20,
                     },
-                },
-                firstName: {
+                }, password: {
                     touched: false,
                     value: '',
-                    valid: false,
-                    validationRules: {
-                        minLength: 2,
-                        maxLength: 20,
-                    },
-                },
-                lastName: {
-                    touched: false,
-                    value: '',
-                    valid: false,
-                    validationRules: {
-                        minLength: 2,
-                        maxLength: 20,
-                    },
-                },
-                password: {
-                    touched: false,
-                    value: '',
-                    valid: false,
+                    valid: true,
                     validationRules: {
                         minLength: 5,
                         maxLength: 20,
 
-                    },
-                },
-                birthdate: {
-                    touched: false,
-                    value: '',
-                    valid: false,
-                    validationRules: {
-                        minAge: 18,
                     },
                 },
             },
@@ -66,19 +40,24 @@ class Authentication extends React.Component {
             loading: false,
             isReported: false,
             reportValue: '',
-            badReport: false,
-            goodReport: false,
         }
-        console.log({loggedIn:props.loggedIn,me:props.me});
+
         this.login = this.login.bind(this);
     }
 
     manSwitch = (value) => {
         this.setState({isManager: value});
+        if(!this.state.isManager){
+           this.state.controls.userName.value="admins";
+            this.state.controls.password.value="admins";
+        }else{
+            this.state.controls.userName.value="teste";
+            this.state.controls.password.value="teste";
+
+        }
     };
     componentDidMount(): void {
-        console.log(this.props.loggedIn);
-        console.log(this.props.me.role);
+
         if(this.props.loggedIn&& this.props.me.role){
             this.props.navigation.navigate('manager');
         }  if(this.props.loggedIn&& !this.props.me.role){
@@ -87,20 +66,32 @@ class Authentication extends React.Component {
 
     }
     async login() {
-        console.log(this.props.error)
-        console.log(this.props.data)
-        console.log(this.props.loads)
-        console.log(this.props.stats)
+
         const username = this.state.controls.userName.value;
         const password = this.state.controls.password.value;
         const {isManager} = this.state;
         await this.props.login(username, password, isManager);
-        console.log(this.props.loggedIn, this.props.me.role);
+
         if (this.props.loggedIn && this.props.me.role) {
             this.props.navigation.navigate('manager');
         }else if(this.props.loggedIn&& !this.props.me.role){
             this.props.navigation.navigate('tech');
         }
+        if (this.props.errors != null) {
+            if(this.props.errors==6 ||this.props.errors==7)
+            this.setState({
+                isReported:true,
+                ReportedValue:'invalide Username or Password'
+            })
+            else{
+                this.setState({
+                    isReported:true,
+                    ReportedValue:'Error Occurred May  you try again Later'
+                })
+            }
+        }
+
+
 
     }
 
@@ -180,7 +171,17 @@ class Authentication extends React.Component {
                                     style={styles.submitButton}>
                                     { this.props.loadsLogin && <Text>Loading...</Text>}
                                     {! this.props.loadsLogin && <Text>LOG IN</Text>}</ButtonSmall>
-
+                                <Dialog
+                                    rounded={true}
+                                    visible={this.state.isReported}
+                                    title="Result"
+                                    onTouchOutside={()=>{
+                                        this.setState({isReported:false})
+                                    }}>
+                                    <View>
+                                        <Text>{this.state.ReportedValue}</Text>
+                                    </View>
+                                </Dialog>
                             </View>
                         </Card>
                     </View>
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state =>({
-    error:state.errors.login,
+    errors:state.errors.login,
     loggedIn:state.loggedIn,
     isManager:state.isManager,
     loadsLogin:state.loads.login,

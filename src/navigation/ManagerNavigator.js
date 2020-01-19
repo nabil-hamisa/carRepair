@@ -17,28 +17,28 @@ const ManagerNavigation = createBottomTabNavigator({
                     <Icon color={tintColor} name={'home'} size={24}/>
                 ),
             },
+        }, AddCars: {
+            screen: AddCar,
+            navigationOptions: {
+                tabBarLabel: 'Add Client',
+                tabBarIcon: ({tintColor}) => (
+                    <Icon color={tintColor} name={'car-crash'} size={24}/>
+                ),
+            },
         },
         Cars: {
             screen: Cars,
             navigationOptions: {
-                tabBarLabel: 'Cars',
+                tabBarLabel: 'Add Car',
                 tabBarIcon: ({tintColor}) => (
                     <Icon color={tintColor} name={'car'} size={24}/>
                 ),
             },
         }
+
+
         ,
-        AddCars: {
-            screen: AddCar,
-            navigationOptions: {
-                tabBarLabel: 'Add Cars',
-                tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name={'car-crash'} size={24}/>
-                ),
-            },
-        }
-        ,
-        AllTech: {
+      /*  AllTech: {
             screen: VehicleTechnician,
             navigationOptions: {
                 tabBarLabel: 'Technician',
@@ -47,7 +47,7 @@ const ManagerNavigation = createBottomTabNavigator({
                 ),
             },
         }
-        ,
+        ,*/
         NominateTech: {
             screen: NominateTechnician,
             navigationOptions: {
@@ -57,15 +57,15 @@ const ManagerNavigation = createBottomTabNavigator({
                 ),
             },
         },
-         profile:{
-            screen:profile,
-             navigationOptions: {
-                 tabBarLabel: 'Profile',
-                 tabBarIcon: ({tintColor}) => (
-                     <Icon color={tintColor} name={'user'} size={24}/>
-                 ),
-             },
-         }
+        profile: {
+            screen: profile,
+            navigationOptions: {
+                tabBarLabel: 'Profile',
+                tabBarIcon: ({tintColor}) => (
+                    <Icon color={tintColor} name={'user'} size={24}/>
+                ),
+            },
+        },
     }, {
         initialRouteName: 'Home',
         navigationOptions: {},
@@ -79,4 +79,4 @@ const ManagerNavigation = createBottomTabNavigator({
         },
     },
 );
-export  default ManagerNavigation;
+export default ManagerNavigation;

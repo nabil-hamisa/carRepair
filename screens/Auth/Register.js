@@ -133,30 +133,52 @@ class Register extends React.Component {
 
 
     async register() {
+        this.setState({
+            loading: true,
+        });
+
         let date = new Date(this.state.controls.birthdate.value);
         let username = this.state.controls.userName.value.toString();
         let firstName = this.state.controls.firstName.value.toString();
         let lastName = this.state.controls.lastName.value.toString();
         let password = this.state.controls.password.value.toString();
-        let repassword=password
+        let repassword = password;
         let language = 'en';
-        let dob=date;
-        console.log(username,firstName,lastName,password,repassword,language,date);
-        await this.props.register({username,firstName,lastName,password,dob,language,});
-        console.log(this.props.error);
+        let dob = date;
+        console.log(username, firstName, lastName, password, repassword, language, date);
+        await this.props.register({username, firstName, lastName, password, dob, language});
+        console.log(this.props.errors);
 
-        if (this.props.loggedIn && this.props.me.role) {
-            this.props.navigation.navigate('manager');
-        } else if (this.props.loggedIn && !this.props.me.role) {
-            this.props.navigation.navigate('tech');
-        }
-        console.log(this.props.loggedIn)
+
+        if (this.props.errors == 8) {
+           await  this.setState({
+                loading: false,
+                isReported: true,
+                reportValue: 'Error Username Already Exists',
+            });
+        } else if (this.props.errors == null) {
+          await  this.setState({
+                loading: false,
+                isReported: true,
+                reportValue: 'Succes Your account Has been Created !',
+
+            });
+            if (this.props.loggedIn) {
+                this.props.navigation.navigate('Authentication');
+            }
+        } else {
+            if (this.props.errors == 0) {
+                this.setState({
+                    loading: false,
+                    isReported: true,
+                    reportValue: 'Error Occured May you try again later',
+                });
+            }
+    };
         this.setState({
             loading: false,
         });
-
-
-    };
+    }
 
     render(props) {
 
@@ -252,7 +274,9 @@ class Register extends React.Component {
                     rounded={true}
                     visible={this.state.isReported}
                     title="Result"
-                    onTouchOutside={this.submit}>
+                    onTouchOutside={() => {
+                        this.setState({isReported: false});
+                    }}>
                     <View>
                         <Text>{this.state.reportValue}</Text>
                     </View>
@@ -288,7 +312,7 @@ const styles = StyleSheet.create({
 
 });
 const mapStateToProps = state => ({
-    error: state.errors,
+    errors: state.errors.register,
     loggedIn: state.loggedIn,
     isManager: state.isManager,
     loadsLogin: state.loads.login,
@@ -300,4 +324,4 @@ const mapDispatchToProps = (dispatch) => ({
     register: (payload) => dispatch(register(payload)),
 });
 
-export default connect(mapStateToProps,mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

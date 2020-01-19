@@ -30,7 +30,7 @@ class PickImage extends Component {
           <Image source={this.state.pickedImaged} style={styles.previewImage} />
         </Card>
         <View style={styles.buttonContaier} >
-            <ButtonSmall   style={styles.addphoto}  onPress={this.pickImageHandler} >Add Car Photo</ButtonSmall>
+            <ButtonSmall   style={styles.addphoto}  onPress={this.pickImageHandler} >Add Photo</ButtonSmall>
         </View>
       </View>
     );

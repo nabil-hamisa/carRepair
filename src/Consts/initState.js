@@ -1,16 +1,33 @@
 export default {
-    isManager:false,
-    loggedIn: false ,
+    isManager: false,
+    loggedIn: false,
     me: {},
-    stats:{
-    },
+    stats: {},
     token: '',
-    errors: {},
-    loads: {
-        login:false,
+
+    success: {
+        addTask:false,
+        addClient: false,
+        addCar: false,
+        carFound: false,
     },
-    data:{
+    errors: {
+        addTask:false,
+        login: {},
+        register: {}, addClient: false,
+        addCar: false,
+        carFound: false,
 
     },
+    loads: {
+        login: false,
+    },
+    data: {},
+    brands: {},
+    models: {},
+    clientFound: null,
+    carFound: null,
+    mechanicians:null,
+    addTask:null,
 
 };

@@ -1,0 +1,17 @@
+export const GLOBAL_ERROR = 0;
+export const ACCESS_RESTRICTED = 1;
+export const USERNAME_TOO_SHORT = 2;
+export const USERNAME_TOO_LONG = 3;
+export const PASSWORD_TOO_SHORT = 4;
+export const PASSWORD_TOO_LONG = 5;
+export const INVALID_USERNAME = 6;
+export const INVALID_PASSWORD = 7;
+export const USERNAME_EXISTS = 8;
+export const FIRSTNAME_TOO_SHORT = 9;
+export const FIRSTNAME_TOO_LONG = 10;
+export const LASTNAME_TOO_SHORT = 11;
+export const LASTNAME_TOO_LONG = 12;
+export const TOO_YOUNG = 13;
+export const INVALID_INDEX = 14;
+export const MECHANICIAN_NOT_FOUND = 15;
+export const CLIENT_EXIST = 16;

@@ -29,8 +29,10 @@ const styles = StyleSheet.create({
         borderRadius: taille / 2,
         borderColor: border,
         borderWidth: borderWidth,
-        borderBottomLeftRadius:0,
-        borderTopRightRadius:0,
+        borderTopLeftRadius:0,
+        borderTopRightRadius:50,
+        borderBottomLeftRadius:75,
+        borderBottomRightRadius:0,
         borderEndColor:'#fd8228',
         justifyContent: 'center',
         alignItems: 'center',
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
     textStyle: {
         fontFamily:'Monoton-Regular',
         color: textColor,
-        fontSize: 50,
+        fontSize: 30,
 
         flexDirection: 'row',
         alignItems: 'center',

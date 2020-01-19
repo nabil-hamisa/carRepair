@@ -7,7 +7,7 @@ export default (state={},action)=>{
         case C.LOGIN:
             return {...state,loads:{...state.loads,login:true}};
         case C.LOGIN_SUCCESS:
-            return {...state,loads:{...state.loads,login:false},me:action.payload.me,loggedIn:true,isManager:action.payload.isManager,lang:action.payload.me.language,token:action.payload.token};
+            return {...state,loads:{...state.loads,login:false},me:action.payload.me,loggedIn:true,lang:action.payload.me.language,token:action.payload.token};
         case C.LOGIN_ERROR:
             return {...state,loads:{...state.loads,login:false},errors:{...state.errors,login:action.payload}};
         case C.CLEAR_LOGIN_ERRORS:
@@ -23,15 +23,27 @@ export default (state={},action)=>{
         case C.STATS:
             return {...state,loads:{...state.loads,stats:true}};
         case C.STATS_SUCCESS:
-            return {...state,loads:{...state.loads,stats:false},stats:action.payload};
+            return {...state,loads:{...state.loads,stats:false}, stats:action.payload};
         case C.STATS_ERROR:
             return {...state,loads:{...state.loads,stats:false},errors:{...state.errors,stats:action.payload}};
         case C.BILLS:
             return {...state,loads:{...state.loads,bills:true}};
+        case C.TASKS:
+            return {...state,loads:{...state.loads,tasks:true}};
+        case C.TASKS_BY_SHEET:
+            return {...state,loads:{...state.loads,tasksBySheet:true}};
+        case C.TASKS_BY_SHEET_SUCCESS:
+            return {...state,loads:{...state.loads,tasksBySheet:false},tasksBySheet:action.payload};
+        case C.TASKS_BY_SHEET_ERROR:
+            return {...state,loads:{...state.loads,tasksBySheet:false},errors:{...state.errors,tasksBySheet:action.payload}};
         case C.BILLS_SUCCESS:
             return {...state,loads:{...state.loads,bills:false},bills:action.payload};
+        case C.TASKS_SUCCESS:
+            return {...state,loads:{...state.loads,tasks:false},tasks:action.payload};
         case C.BILLS_ERROR:
             return {...state,loads:{...state.loads,bills:false},errors:{...state.errors,bills:action.payload}};
+        case C.TASKS_ERROR:
+            return {...state,loads:{...state.loads,tasks:false},errors:{...state.errors,tasks:action.payload}};
         case C.BRANDS:
             return {...state,loads:{...state.loads,brands:true}};
         case C.BRANDS_SUCCESS:
@@ -50,16 +62,164 @@ export default (state={},action)=>{
             return {...state,loads:{...state.loads,clients:false},clients:action.payload};
         case C.CLIENTS_ERROR:
             return {...state,loads:{...state.loads,clients:false},errors:{...state.errors,clients:action.payload}};
+        case C.ADD_CLIENT:
+            return {...state,loads:{...state.loads,addClient:true},success:{...state.success,addClient:false},errors:{...state.errors,addClient:false}};
+        case C.ADD_SHEET:
+            return {...state,loads:{...state.loads,addSheet:true}};
+        case C.ADD_CAR:
+            return {...state,loads:{...state.loads,addCar:true},success:{...state.success,addCar:false},errors:{...state.errors,addCar:false}};
+        case C.ADD_PIECES_TO_TASK:
+            return {...state,loads:{...state.loads,addPiecesToTask:true}};
+        case C.ADD_PIECES_TO_TASK_SUCCESS:
+            return {...state,loads:{...state.loads,addPiecesToTask:false},success:{...state.success,addPiecesToTask:true}};
+        case C.ADD_PIECES_TO_TASK_ERROR:
+            return {...state,loads:{...state.loads,addPiecesToTask:false},errors:{...state.errors,addPiecesToTask:true}};
+        case C.ADD_CLIENT_SUCCESS:
+            return {...state,loads:{...state.loads,addClient:false},success:{...state.success,addClient:true}};
+        case C.ADD_SHEET_SUCCESS:
+            return {...state,loads:{...state.loads,addSheet:false},success:{...state.success,addSheet:true}};
+        case C.ADD_CAR_SUCCESS:
+            return {...state,loads:{...state.loads,addCar:false},success:{...state.success,addCar:true}};
+        case C.ADD_CAR_ERROR:
+            return {...state,loads:{...state.loads,addCar:false},errors:{...state.errors,addCar:true}};
+        case C.ADD_SHEET_ERROR:
+            return {...state,loads:{...state.loads,addSheet:false},errors:{...state.errors,addSheet:true}};
+        case C.ADD_CLIENT_ERROR:
+            return {...state,loads:{...state.loads,addClient:false},errors:{...state.errors,addClient:true}};
+        case C.ADD_MECHANICIAN:
+            return {...state,loads:{...state.loads,addMechanician:true}};
+        case C.ADD_TASK:
+            return {...state,loads:{...state.loads,addTask:true}};
+        case C.ADD_MECHANICIAN_SUCCESS:
+            return {...state,loads:{...state.loads,addMechanician:false},success:{...state.success,addMechanician:true}};
+        case C.ADD_TASK_SUCCESS:
+            return {...state,loads:{...state.loads,addTask:false},success:{...state.success,addTask:true}};
+        case C.ADD_MECHANICIAN_ERROR:
+            return {...state,loads:{...state.loads,addMechanician:false},errors:{...state.errors,addMechanician:true}};
+        case C.ADD_TASK_ERROR:
+            return {...state,loads:{...state.loads,addTask:false},errors:{...state.errors,addTask:true}};
+        case C.UPDATE_MECHANICIAN:
+            return {...state,loads:{...state.loads,updateMechanician:true}};
+        case C.UPDATE_CAR:
+            return {...state,loads:{...state.loads,updateCar:true}};
+        case C.UPDATE_TASK:
+            return {...state,loads:{...state.loads,updateTask:true}};
+        case C.UPDATE_TASK_SUCCESS:
+            return {...state,loads:{...state.loads,updateTask:false},success:{...state.success,updateTask:true}};
+        case C.UPDATE_TASK_ERROR:
+            return {...state,loads:{...state.loads,updateTask:false},errors:{...state.errors,updateTask:true}};
+        case C.UPDATE_CAR_SUCCESS:
+            return {...state,loads:{...state.loads,updateCar:false},success:{...state.success,updateCar:true}};
+        case C.UPDATE_CAR_ERROR:
+            return {...state,loads:{...state.loads,updateCar:false},errors:{...state.errors,updateCar:true}};
+        case C.UPDATE_MECHANICIAN_SUCCESS:
+            return {...state,loads:{...state.loads,updateMechanician:false},success:{...state.success,updateMechanician:true}};
+        case C.UPDATE_MECHANICIAN_ERROR:
+            return {...state,loads:{...state.loads,updateMechanician:false},errors:{...state.errors,updateMechanician:true}};
+        case C.UPDATE_CLIENT:
+            return {...state,loads:{...state.loads,updateClient:true}};
+        case C.UPDATE_CLIENT_SUCCESS:
+            return {...state,loads:{...state.loads,updateClient:false},success:{...state.success,updateClient:true}};
+        case C.UPDATE_CLIENT_ERROR:
+            return {...state,loads:{...state.loads,updateClient:false},errors:{...state.errors,updateClient:true}};
         case C.MECHANICIANS:
             return {...state,loads:{...state.loads,mechanicians:true}};
         case C.MECHANICIANS_SUCCESS:
-            console.log(action.payload);
-            return {...state,loads:{...state.loads,mechanicians:false},mechanicians:action.payload};
+            return {...state,loads:{...state.loads,mechanicians:false},mechanicians:action.payload,success:{...state.success,deleteMechanician:false}};
         case C.MECHANICIANS_ERROR:
             return {...state,loads:{...state.loads,mechanicians:false},errors:{...state.errors,mechanicians:action.payload}};
-
+        case C.DELETE_MECHANICIAN:
+            return {...state,loads:{...state.loads,deleteMechanician:true}};
+        case C.DELETE_MECHANICIAN_SUCCESS:
+            return {
+                ...state,loads:{...state.loads,deleteMechanician:false},success:{...state.success,deleteMechanician:true}
+            };
+        case C.DELETE_MECHANICIAN_ERROR:
+            return {
+                ...state,loads:{...state.loads,deleteMechanician:false},errors:{...state.errors,deleteMechanician:true}
+            };
+        case C.DELETE_CAR:
+            return {...state,loads:{...state.loads,deleteCar:true}};
+        case C.DELETE_CAR_SUCCESS:
+            return {...state,loads:{...state.loads,deleteCar:false},success:{...state.success,deleteCar:true}};
+        case C.DELETE_SHEET:
+            return {...state,loads:{...state.loads,deleteSheet:true}};
+        case C.DELETE_TASK:
+            return {...state,loads:{...state.loads,deleteTask:true}};
+        case C.DELETE_SHEET_SUCCESS:
+            return {...state,loads:{...state.loads,deleteSheet:false},success:{...state.success,deleteSheet:true}};
+        case C.DELETE_TASK_SUCCESS:
+            return {...state,loads:{...state.loads,deleteTask:false},success:{...state.errors,deleteTask:true}};
+        case C.DELETE_SHEET_ERROR:
+            return {...state,loads:{...state.loads,deleteSheet:false},errors:{...state.errors,deleteSheet:true}};
+        case C.DELETE_TASK_ERROR:
+            return {...state,loads:{...state.loads,deleteTask:false},errors:{...state.errors,deleteTask:true}};
+        case C.DELETE_CAR_ERROR:
+            return {...state,loads:{...state.loads,deleteCar:false},errors:{...state.errors,deleteCar:true}};
+        case C.DELETE_CLIENT:
+            return {...state,loads:{...state.loads,deleteClient:true}};
+        case C.DELETE_CLIENT_SUCCESS:
+            return {
+                ...state,loads:{...state.loads,deleteClient:false},success:{...state.success,deleteClient:true}
+            };
+        case C.DELETE_CLIENT_ERROR:
+            return {
+                ...state,loads:{...state.loads,deleteClient:false},errors:{...state.errors,deleteClient:true}
+            };
+        case C.CLEAR_EDIT_MECHANICIAN_SUCCESS:
+            return {...state,success:{...state.success,updateMechanician:false}};
+        case C.CLEAR_ADD_MECHANICIAN_SUCCESS:
+            return {...state,success:{...state.success,addMechanician:false}};
+        case C.CLEAR_EDIT_CLIENT_SUCCESS:
+            return {...state,success:{...state.success,updateClient:false}};
+        case C.CLEAR_ADD_CLIENT_SUCCESS:
+            return {...state,success:{...state.success,addClient:false}};
+        case C.CLEAR_ADD_CAR_SUCCESS:
+            return {...state,success:{...state.success,addCar:false}};
+        case C.CLEAR_EDIT_CAR_SUCCESS:
+            return {...state,success:{...state.success,updateCar:false}};
+        case C.MODELS_BY_BRAND:
+            return {...state,loads:{...state.loads,models:true}};
+        case C.MODELS_BY_BRAND_SUCCESS:
+            return {...state,loads:{...state.loads,models:false},models:action.payload};
+        case C.MODELS_BY_BRAND_ERROR:
+            return {...state,loads:{...state.loads,models:false},errors:{...state.errors,models:true}};
+        case C.CARS:
+            return {...state,loads:{...state.loads,cars:true}};
+        case C.CARS_SUCCESS:
+            return {...state,loads:{...state.loads,cars:false},cars:action.payload};
+        case C.CARS_ERROR:
+            return {...state,loads:{...state.loads,cars:false},errors:{...state.errors,cars:true}};
+        case C.SEARCH_CLIENT:
+            return {...state,loads:{...state.loads,clientFound:true}};
+        case C.SEARCH_CLIENT_SUCCESS:
+            return {...state,loads:{...state.loads,clientFound:false},clientFound:action.payload};
+        case C.SEARCH_CLIENT_ERROR:
+            return {...state,loads:{...state.loads,clientFound:false},errors:{...state.errors,clientFound:true}};
+        case C.SET_ENABLE_MOBILE_MENU:
+            return {
+                ...state,ThemeOptions:{...state.ThemeOptions,enableMobileMenu: action.enableMobileMenu},
+            };
+        case C.SET_ENABLE_MOBILE_MENU_SMALL:
+            return {
+                ...state,ThemeOptions:{...state.ThemeOptions,enableMobileMenuSmall: action.enableMobileMenuSmall},
+            };
+        case C.CLEAR_STATS:
+            return {...state,stats:{...state.stats,stats:null}}
         case C.LOGOUT:
             return initialState;
+        case C.SET_ENABLE_CLOSED_SIDEBAR:
+            return {
+                ...state,
+                ThemeOptions:{...state.ThemeOptions,enableClosedSidebar: action.enableClosedSidebar},
+            };
+
+        case C.SEARCH_CAR:
+            return {...state,loads:{...state.loads,carFound:true}};
+        case C.SEARCH_CAR_SUCCESS:
+            return {...state,loads:{...state.loads,carFound:false},carFound:action.payload};
+        case C.SEARCH_CAR_ERROR:
+            return {...state,loads:{...state.loads,carFound:false},errors:{...state.errors,carFound:true}};
         default:return state;
     }
 }

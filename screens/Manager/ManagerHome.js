@@ -6,62 +6,63 @@ import {connect} from 'react-redux';
 import {getStats} from '../../src/Actions';
 
 class ManagerHome extends React.Component {
+    _isMounted = false;
     constructor(props) {
         super(props);
-        this.getData = this.getData.bind(this);
         this.state = {
-            items: [{title: 'mechanicians', value: this.props.stats.mechanicians?this.props.stats.mechanicians.toString():'0'},
-                {title: 'cars', value: this.props.stats.cars?this.props.stats.cars.toString():'1'}, {
-                title: 'clients',
-                value: this.props.stats.clients?this.props.stats.clients.toString():'0',
-            }, {title: 'income', value: this.props.stats.income?this.props.stats.income.toString():'0'}],
+            items: this.props.stats,
             isLoading: false,
-        }
-
+            stats: {},
+        };
+        this.getStats = this.getStats.bind(this);
     }
 
-    getData= async () => {
+    async getStats() {
+        console.log(this.props.me);
+        console.log(this.props.stats);
         await this.props.getStats();
-
-
-
+        console.log(this.props.stats);
+         this.setState({isLoading: false});
     };
 
      componentDidMount(): void {
+         this._isMounted = true;
+         if (this._isMounted) {
+             this.props.getStats();
+         }
 
-        this.props.getStats();
     }
-    componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
-        if(prevProps.stats !== this.props.stats)
-            this.setState({
-                items: [{title: 'mechanicians', value: this.props.stats.mechanicians},
-                    {title: 'cars', value: this.props.stats.cars}, {
-                        title: 'clients',
-                        value: this.props.stats.clients,
-                    }, {title: 'income', value: this.props.stats.income}]
-            })
-     }
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
-    renderStatus = ({item}) => {
-        return (
-            <View style={styles.cirleses}>
-                <CircleText title={item.title} value={item.value}/>
-            </View>
-        );
-    };
 
     render(props) {
         return (
             <View style={styles.container}>
                 <Header title='HOME'/>
+                <StatusBar
+                    backgroundColor="#fd8228"
+                    barStyle="light-content"
+                />
                 <View style={styles.status}>
-                    <FlatList
-                        data={this.state.items}
-                        renderItem={this.renderStatus}
-                        refreshing={this.state.isLoading}
-                        onRefresh={this.getData}
-                        numColumns={2}
-                    />
+                    <ScrollView refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.isLoading}
+                            onRefresh={this.getStats}
+                            title="Loading..."
+                        />
+                    }>
+                        <View style={styles.cirleses}>
+                            <CircleText title="Mechanicians" value={this.props.stats.mechanicians}/>
+                            <CircleText title="Client" value={this.props.stats.clients}/>
+                        </View>
+                        <View style={styles.cirleses}>
+                            <CircleText title="Cars" value={this.props.stats.cars}/>
+                            <CircleText style={{fontSize:1}} title="Income" value={this.props.stats.income}/>
+                        </View>
+
+                    </ScrollView>
 
 
                 </View>
@@ -95,12 +96,14 @@ const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     isManager: state.isManager,
     me: state.me,
-    stats:state.stats,
+    stats: state.stats,
+    errors: state.errors,
+    token:state.token
 });
 const mapDispatchToProps = dispatch => ({
 
     getStats: () => dispatch(getStats()),
 
 });
-export default connect(mapStateToProps,mapDispatchToProps)(ManagerHome);
+export default connect(mapStateToProps, mapDispatchToProps)(ManagerHome);
 

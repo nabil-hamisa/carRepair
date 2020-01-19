@@ -2,8 +2,7 @@ import gql from "graphql-tag";
 export const MANAGER_LOGIN = gql`
     query ManagerLogin($username:String!,$password:String!){
         managerLogin(data:{username:$username,password:$password}){token,
-            me{
-                id,
+            me{id,
                 firstName,
                 lastName,
                 username,
@@ -45,7 +44,7 @@ export const GET_MECHANICIANS = gql`
                 firstName,
                 lastName,
                 username,
-                dob   
+                dob
             }
         }
     }
@@ -67,6 +66,7 @@ export const GET_CLIENTS = gql`
         clients(index:$index){
             totalPages,
             clients{
+                id,
                 firstName,
                 lastName,
                 dob,
@@ -93,11 +93,21 @@ export const GET_SHEETS = gql`
                 id,
                 date,
                 car{
+                    id
+                    number
                     model{
+                        id
                         name,
                         brand{
+                            id
                             name
                         }
+                    }
+                    client{
+                        id
+                        firstName
+                        lastName
+                        cin
                     }
                 }
             }
@@ -121,14 +131,24 @@ export const GET_MODELS_BY_BRAND = gql`
     }
 `;
 export const GET_TASKS = gql`
-    query GetTasks{
-        tasks{
-            id
-            startDate
-            endDate
-            price
-            sheet{
+    query GetTasks($index:Int!){
+        tasks(index:$index){
+            totalPages,
+            tasks{
                 id
+                name
+                startDate
+                endDate
+                price
+                mechanician{
+                    id
+                    firstName
+                    lastName
+                    username
+                }
+                sheet{
+                    id
+                }
             }
         }
     }
@@ -164,10 +184,10 @@ export const GET_BILLS = gql`
 export const GET_STATS = gql`
     query GetStats{
         stats{
-            mechanicians,
-            cars,
-            clients,
-            income,
+            mechanicians
+            cars
+            clients
+            income
         }
     }
 `;
@@ -177,7 +197,7 @@ export const REGISTER = gql`
             username:$username,firstName:$firstName,lastName:$lastName,password:$password,dob:$dob,language:$language
         }){
             token,
-            me{r
+            me{
                 id
                 firstName,
                 lastName,
@@ -267,7 +287,7 @@ export const UPDATE_PIECE = gql`
     }
 `;
 export const ADD_CLIENT = gql`
-    mutation AddClient($firstName:String!,$lastName:String,$dob:DateTime!,$cin:String!,$carNumber:String!,$carModel:ID!){
+    mutation AddClient($firstName:String!,$lastName:String!,$dob:DateTime!,$cin:String!,$carNumber:String!,$carModel:ID!){
         addClient(data:{
             firstName:$firstName,
             lastName:$lastName,
@@ -296,7 +316,7 @@ export const DELETE_CLIENT = gql`
     }
 `;
 export const UPDATE_CLIENT = gql`
-    mutation UpdateClient($id:ID!,$firstName:String,$lastName:String,$dob:String,$cin:String){
+    mutation UpdateClient($id:ID!,$firstName:String,$lastName:String,$dob:DateTime,$cin:String){
         updateClient(id:$id,data:{
             firstName:$firstName,
             lastName:$lastName,
@@ -316,10 +336,10 @@ export const ADD_SHEET = gql`
         addSheet(car:$car){
             id
             car{
-                model
+                id
                 number
                 model{
-                   id,
+                    id,
                     name,
                     brand{
                         id
@@ -333,25 +353,15 @@ export const ADD_SHEET = gql`
 `;
 export const DELETE_SHEET = gql`
     mutation DeleteSheet($id:ID!){
-        id
-        car{
-            model
-            number
-            model{
-                id,
-                name,
-                brand{
-                    id
-                    name
-                }
-            }
+        deleteSheet(id:$id){
+            id
         }
-        date
     }
 `;
 export const ADD_TASK = gql`
-    mutation AddTask($startDate:DateTime!,$endDate:DateTime,$price:Float,$sheet:ID!,$mechanician:ID!){
+    mutation AddTask($name:String!,$startDate:DateTime!,$endDate:DateTime,$price:Float,$sheet:ID!,$mechanician:ID!){
         addTask(data:{
+            name:$name,
             startDate:$startDate,
             endDate:$endDate,
             price:$price,
@@ -367,11 +377,6 @@ export const ADD_TASK = gql`
                 lastName
             },
             sheet{
-                client{
-                    id
-                    firstName
-                    lastName
-                },
                 car{
                     id
                     number
@@ -382,6 +387,11 @@ export const ADD_TASK = gql`
                             id
                             name
                         }
+                    }
+                    client{
+                        id
+                        firstName
+                        lastName
                     }
                 }
             }
@@ -391,70 +401,26 @@ export const ADD_TASK = gql`
 export const DELETE_TASK = gql`
     mutation DeleteTask($id:ID!){
         deleteTask(id:$id){
-            id,
-            startDate,
-            endDate,
-            mechanician{
-                id
-                firstName
-                lastName
-            },
-            sheet{
-                client{
-                    id
-                    firstName
-                    lastName
-                },
-                car{
-                    id
-                    number
-                    model{
-                        id
-                        name
-                        brand{
-                            id
-                            name
-                        }
-                    }
-                }
-            }
+            id
+        }
+    }
+`;
+export const ADD_PIECES_TO_TASK = gql`
+    mutation AddPiecesToTask($id:ID!,$pieces:[ID!]!){
+        addPiecesToTask(id:$id,pieces:$pieces){
+            id
         }
     }
 `;
 export const UPDATE_TASK = gql`
-    mutation UpdateTask($id:ID!,$startDate:DateTime,$endDate:DateTime,$price:Float){
+    mutation UpdateTask($id:ID!,$name:String,$startDate:DateTime,$endDate:DateTime,$price:Float){
         updateTask(id:$id,data:{
+            name:$name
             startDate:$startDate
             endDate:$endDate
             price:$price
         }){
             id,
-            startDate,
-            endDate,
-            mechanician{
-                id
-                firstName
-                lastName
-            },
-            sheet{
-                client{
-                    id
-                    firstName
-                    lastName
-                },
-                car{
-                    id
-                    number
-                    model{
-                        id
-                        name
-                        brand{
-                            id
-                            name
-                        }
-                    }
-                }
-            }
         }
     }
 `;
@@ -546,6 +512,181 @@ export const UPDATE_BILL = gql`
             discount
             date
             payBefore
+        }
+    }
+`;
+export const GET_CARS = gql`
+    query Cars($index:Int!){
+        cars(index:$index){
+            totalPages
+            cars{
+                id
+                number
+                model{
+                    id
+                    name
+                    brand{
+                        id
+                        name
+                    }
+                }
+            }
+        }
+    }
+`;
+export const DELETE_CAR = gql`
+    mutation DeleteCar($id:ID!){
+        deleteCar(id:$id){
+            id
+            number,
+            model{
+                id
+                name
+                brand{
+                    id
+                    name
+                }
+            }
+        }
+    }
+`;
+export const SEARCH_CLIENT = gql`
+    query SearchClient($str:String!){
+        searchClient(str:$str){
+            id
+            firstName
+            lastName
+            cin
+            dob
+        }
+    }
+`;
+export const SEARCH_MECHANICIAN = gql`
+    query SearchMechanician($str:String!){
+        searchMechanician(str:$str){
+            id
+            firstName
+            lastName
+            username
+        }
+    }
+`;
+export const SEARCH_SHEET = gql`
+    query SearchSheet($str:String!){
+        searchSheet(str:$str){
+            id
+            car{
+                id
+                model{
+                    id
+                    name
+                    brand{
+                        id
+                        name
+                    }
+                }
+                client{
+                    id
+                    firstName
+                    lastName
+                }
+            }
+        }
+    }
+`;
+export const TASKS_BY_SHEET = gql`
+    query TasksBySheet($id:ID!,$index:Int!){
+        tasksBySheet(id:$id,index:$index){
+            totalPages
+            tasks{
+                id
+                startDate
+                endDate
+                mechanician{
+                    id
+                    firstName
+                    lastName
+                }
+            }
+        }
+    }
+`;
+export const SEARCH_CAR = gql`
+    query SearchChat($str: String!) {
+        searchCar(str: $str) {
+            id
+            client {
+                id
+                firstName
+                lastName
+                cin
+            }
+            model {
+                name
+                brand {
+                    name
+                }
+            }
+            number
+            sheets {
+                id
+                date
+                bill {
+                    id
+                    customPrice,
+                }
+                tasks{name
+                    startDate
+                    endDate
+                    pieces{
+                        name
+                        price
+                    }
+                    mechanician{
+                        firstName
+                        lastName
+
+                    }
+
+                }
+            }
+        }
+    }
+
+`;
+export const ADD_CAR = gql`
+    mutation AddCar($model:ID!,$number:String!,$client:ID!){
+        addCar(data:{
+            model:$model,number:$number,client:$client
+        }){
+            id,
+            number,
+            model{
+                id
+                name
+                brand{
+                    id
+                    name
+                }
+            }
+        }
+    }
+`;
+export const UPDATE_CAR = gql`
+    mutation UpdateCar($id:ID!,$model:ID,$number:String){
+        updateCar(id:$id,data:{
+            model:$model,number:$number
+        }){
+            id,
+            number,
+            model{
+                id
+                name
+                brand{
+                    id
+                    name
+                }
+            }
         }
     }
 `;
