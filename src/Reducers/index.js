@@ -87,15 +87,15 @@ export default (state={},action)=>{
         case C.ADD_CLIENT_ERROR:
             return {...state,loads:{...state.loads,addClient:false},errors:{...state.errors,addClient:true}};
         case C.ADD_MECHANICIAN:
-            return {...state,loads:{...state.loads,addMechanician:true}};
+            return {...state,loads:{...state.loads,addMechanician:true},success:{...state.success,addClient:false},errors:{...state.errors,addClient:false}};
         case C.ADD_TASK:
             return {...state,loads:{...state.loads,addTask:true}};
         case C.ADD_MECHANICIAN_SUCCESS:
-            return {...state,loads:{...state.loads,addMechanician:false},success:{...state.success,addMechanician:true}};
+            return {...state,loads:{...state.loads,addMechanician:false},errors:{...state.errors,addMechanician:false},success:{...state.success,addMechanician:true}};
         case C.ADD_TASK_SUCCESS:
             return {...state,loads:{...state.loads,addTask:false},success:{...state.success,addTask:true}};
         case C.ADD_MECHANICIAN_ERROR:
-            return {...state,loads:{...state.loads,addMechanician:false},errors:{...state.errors,addMechanician:true}};
+            return {...state,loads:{...state.loads,addMechanician:false},success:{...state.success,addMechanician:false},errors:{...state.errors,addMechanician:action.payload}};
         case C.ADD_TASK_ERROR:
             return {...state,loads:{...state.loads,addTask:false},errors:{...state.errors,addTask:true}};
         case C.UPDATE_MECHANICIAN:

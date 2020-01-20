@@ -40,6 +40,7 @@ class Authentication extends React.Component {
             loading: false,
             isReported: false,
             reportValue: '',
+            badReport:false,
         }
 
         this.login = this.login.bind(this);
@@ -81,11 +82,13 @@ class Authentication extends React.Component {
             if(this.props.errors==6 ||this.props.errors==7)
             this.setState({
                 isReported:true,
+                badReport:true,
                 ReportedValue:'invalide Username or Password'
             })
             else{
                 this.setState({
                     isReported:true,
+                    badReport:true,
                     ReportedValue:'Error Occurred May  you try again Later'
                 })
             }
@@ -178,8 +181,16 @@ class Authentication extends React.Component {
                                     onTouchOutside={()=>{
                                         this.setState({isReported:false})
                                     }}>
+
                                     <View>
-                                        <Text>{this.state.ReportedValue}</Text>
+                                        {this.state.badReport&& <Text style={{
+                                            color: 'red',
+                                            fontFamily: 'hemi head bd it',
+                                        }}>{this.state.ReportedValue}</Text>}
+                                        {!this.state.badReport&& <Text style={{
+                                            color: 'green',
+                                            fontFamily: 'hemi head bd it',
+                                        }}>{this.state.ReportedValue}</Text>}
                                     </View>
                                 </Dialog>
                             </View>

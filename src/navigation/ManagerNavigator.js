@@ -3,7 +3,7 @@ import {createBottomTabNavigator} from 'react-navigation-tabs';
 import Cars from '../../screens/Manager/ManagerCars';
 import AddCar from '../../screens/Manager/MangerAddCar';
 import ManagerHome from '../../screens/Manager/ManagerHome';
-import VehicleTechnician from '../../screens/Manager/ManagerVehicleTechnician';
+import ManagerAddMech from '../../screens/Manager/ManagerAddMech';
 import NominateTechnician from '../../screens/Manager/ManagerNominateVehicleTechnician';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import profile from '../../screens/Manager/profile';
@@ -34,20 +34,18 @@ const ManagerNavigation = createBottomTabNavigator({
                     <Icon color={tintColor} name={'car'} size={24}/>
                 ),
             },
-        }
-
-
-        ,
-      /*  AllTech: {
-            screen: VehicleTechnician,
+        },
+       AllTech: {
+            screen: ManagerAddMech
+           ,
             navigationOptions: {
-                tabBarLabel: 'Technician',
+                tabBarLabel: 'Add Mech',
                 tabBarIcon: ({tintColor}) => (
                     <Icon color={tintColor} name={'users'} size={24}/>
                 ),
             },
         }
-        ,*/
+        ,
         NominateTech: {
             screen: NominateTechnician,
             navigationOptions: {

@@ -27,16 +27,6 @@ const TechnicienNavigator = createBottomTabNavigator({
             },
         }
         ,
-        AddCars: {
-            screen: editOrder,
-            navigationOptions: {
-                tabBarLabel: 'Edit Order',
-                tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name={'edit'} size={24}/>
-                ),
-            },
-        }
-        ,
         AllTech: {
             screen: doneCar,
             navigationOptions: {

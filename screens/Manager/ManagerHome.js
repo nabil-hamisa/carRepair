@@ -22,13 +22,13 @@ class ManagerHome extends React.Component {
         console.log(this.props.stats);
         await this.props.getStats();
         console.log(this.props.stats);
-         this.setState({isLoading: false});
+        await this.setState({isLoading: false});
     };
 
-     componentDidMount(): void {
+    async componentDidMount(): void {
          this._isMounted = true;
          if (this._isMounted) {
-             this.props.getStats();
+            await this.props.getStats();
          }
 
     }

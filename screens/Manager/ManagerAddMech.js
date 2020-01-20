@@ -9,7 +9,7 @@ import DefqultInput from '../../component/DefaultInput';
 import VButton from '../../component/VButton';
 import {Dialog} from 'react-native-simple-dialogs';
 import {connect} from 'react-redux';
-import {register, clearRegisterErrors} from '../../src/Actions';
+import {register, clearRegisterErrors, addMechanician} from '../../src/Actions';
 
 
 class Register extends React.Component {
@@ -72,18 +72,10 @@ class Register extends React.Component {
             isReported: false,
             reportValue: '',
             badReport: false,
+
         };
-        this.register = this.register.bind(this);
+        this.addMechanician = this.register.bind(this);
     }
-
-    componentDidMount(): void {
-        if (this.props.loggedIn && this.props.me.role) {
-            this.props.navigation.navigate('manager');
-        } else if (this.props.loggedIn && !this.props.me.role) {
-            this.props.navigation.navigate('tech');
-        }
-    }
-
 
     updateInputState = (key, value) => {
         this.setState(prevState => {
@@ -132,52 +124,63 @@ class Register extends React.Component {
 
 
     async register() {
-        this.setState({
-            loading: true,
-        });
 
         let date = new Date(this.state.controls.birthdate.value);
         let username = this.state.controls.userName.value.toString();
         let firstName = this.state.controls.firstName.value.toString();
         let lastName = this.state.controls.lastName.value.toString();
         let password = this.state.controls.password.value.toString();
-        let repassword = password;
-        let language = 'en';
+
+
         let dob = date;
-        console.log(username, firstName, lastName, password, repassword, language, date);
-        await this.props.register({username, firstName, lastName, password, dob, language});
-        console.log(this.props.errors);
-
-
+        this.setState({
+            loading: true,
+        });
+        await this.props.addMechanician({username, firstName, lastName, password, dob});
+        console.log(this.props.errors,this.props.success);
         if (this.props.errors == 8) {
             await this.setState({
+                badReport:true,
                 loading: false,
                 isReported: true,
-                badReport: true,
                 reportValue: 'Error Username Already Exists',
             });
-        } else if (this.props.errors == null) {
-            await this.setState({
+        }
+        if (this.props.errors == 13) {
+            this.setState({
+                badReport:true,
                 loading: false,
-                badReport: false,
                 isReported: true,
-                reportValue: 'Succes Your account Has been Created !',
+                reportValue: 'Error Your Age under 18',
+            });
+        }
+
+        if (this.props.errors == 0) {
+            this.setState({
+                badReport:true,
+                loading: false,
+                isReported: true,
+                reportValue: 'Error Occured in server',
+            });
+        }
+
+
+
+
+        if (this.props.success) {
+            await  this.setState({
+                badReport:false,
+                loading: false,
+                isReported: true,
+                reportValue: 'Succes Your Mechanician  Has been Added !',
 
             });
-            if (this.props.loggedIn) {
-                this.props.navigation.navigate('Authentication');
-            }
-        } else {
-            if (this.props.errors == 0) {
-                this.setState({
-                    badReport:true,
-                    loading: false,
-                    isReported: true,
-                    reportValue: 'Error Occured May you try again later',
-                });
-            }
+
+        }else if(this.props.errors){
+
         }
-        ;
+
+
         this.setState({
             loading: false,
         });
@@ -192,7 +195,7 @@ class Register extends React.Component {
                     backgroundColor="#fd8228"
                     barStyle="light-content"
                 />
-                <Header title='Register'/>
+                <Header title='Add Mechanician'/>
                 <View style={styles.loginContainer}>
                     <ScrollView>
                         <Card>
@@ -254,7 +257,7 @@ class Register extends React.Component {
                             }{
                             }
                                 <ButtonSmall
-                                    onPress={this.register}
+                                    onPress={this.register.bind(this)}
                                     disabled={
                                         !this.state.controls.userName.valid ||
                                         !this.state.controls.birthdate.valid ||
@@ -267,7 +270,7 @@ class Register extends React.Component {
 
                                     style={styles.submitButton}>
                                     {this.state.loading && <Text>Loading...</Text>}
-                                    {!this.state.loading && <Text>register</Text>}
+                                    {!this.state.loading && <Text>Add Mechanician</Text>}
                                 </ButtonSmall>
                             </View>
                         </Card>
@@ -281,16 +284,14 @@ class Register extends React.Component {
                         this.setState({isReported: false});
                     }}>
                     <View>
-                        <View>
-                            {this.state.badReport && <Text style={{
-                                color: 'red',
-                                fontFamily: 'hemi head bd it',
-                            }}>{this.state.reportValue}</Text>}
-                            {!this.state.badReport && <Text style={{
-                                color: 'green',
-                                fontFamily: 'hemi head bd it',
-                            }}>{this.state.reportValue}</Text>}
-                        </View>
+                       {this.state.badReport&& <Text style={{
+                           color: 'red',
+                           fontFamily: 'hemi head bd it',
+                       }}>{this.state.reportValue}</Text>}
+                       {!this.state.badReport&& <Text style={{
+                           color: 'green',
+                           fontFamily: 'hemi head bd it',
+                       }}>{this.state.reportValue}</Text>}
                     </View>
                 </Dialog>
             </View>
@@ -324,7 +325,8 @@ const styles = StyleSheet.create({
 
 });
 const mapStateToProps = state => ({
-    errors: state.errors.register,
+    errors: state.errors.addMechanician,
+    success: state.success.addMechanician,
     loggedIn: state.loggedIn,
     isManager: state.isManager,
     loadsLogin: state.loads.login,
@@ -334,6 +336,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => ({
     clearRegisterErrors: () => dispatch(clearRegisterErrors()),
     register: (payload) => dispatch(register(payload)),
+    addMechanician: (payload) => dispatch(addMechanician(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

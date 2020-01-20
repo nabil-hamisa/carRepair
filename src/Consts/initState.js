@@ -6,18 +6,21 @@ export default {
     token: '',
 
     success: {
+        addMechanician:false,
         addTask:false,
         addClient: false,
         addCar: false,
         carFound: false,
+        tasks:false
     },
     errors: {
+        addMechanician:false,
         addTask:false,
         login: {},
         register: {}, addClient: false,
         addCar: false,
         carFound: false,
-
+        tasks:false
     },
     loads: {
         login: false,
@@ -29,5 +32,11 @@ export default {
     carFound: null,
     mechanicians:null,
     addTask:null,
+    tasks:{
+        tasks:[]
+
+
+    },
+    addMechanician:{}
 
 };

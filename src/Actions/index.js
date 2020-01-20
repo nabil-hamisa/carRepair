@@ -1,7 +1,9 @@
 import ApolloClient, {cache, createClient} from '../ApolloClient';
 import * as C from '../Consts';
 import * as GQL from '../Consts/GraphQL';
-
+const initAddMechanician = ()=>({type:C.ADD_MECHANICIAN});
+const addMechanicianSuccess = ()=>({type:C.ADD_MECHANICIAN_SUCCESS});
+const addMechanicianError = payload=>({type:C.ADD_MECHANICIAN_ERROR,payload});
 const initRegister = () => ({type: C.REGISTER});
 const registerSuccess = payload => ({type: C.REGISTER_SUCCESS, payload});
 const registerError = payload => ({type: C.REGISTER_ERROR, payload});
@@ -42,6 +44,9 @@ const addTaskError=payload=>({type:C.ADD_TASK_ERROR,payload});
 const initGetMechanicians=()=>({type:C.MECHANICIANS});
 const getMechaniciansSuccess=payload=>({type:C.MECHANICIANS_SUCCESS,payload});
 const getMechaniciansError=payload=>({type:C.MECHANICIANS_ERROR,payload});
+const initGetTasks=()=>({type:C.TASKS});
+const getTasksSuccess=payload=>({type:C.TASKS_SUCCESS,payload});
+const getTasksError=payload=>({type:C.TASKS_ERROR,payload});
 export const register = payload => async dispatch => {
 
     dispatch( clearRegisterErrors());
@@ -53,9 +58,7 @@ try {
             variables: payload,
         })).data.register;
         dispatch(registerSuccess({...data, me: {...data.me, role: true}}));
-        console.log(data);
     } catch (e) {
-        console.log(e.message);
         let errorNumber = parseInt(e.message.replace('GraphQL error: ', ''));
         dispatch(registerError(errorNumber));
     }
@@ -85,6 +88,7 @@ export const login = payload => async dispatch => {
                     query: GQL.MECHANICIAN_LOGIN,
                     variables: {username, password},
                 })).data.mechanicianLogin;
+                createClient(login.token);
                 dispatch(loginSuccess({token: login.token, me: {...login.me, role: isManager}}));
             } catch (e) {
                 let errorNumber = parseInt(e.message.replace('GraphQL error: ', ''));
@@ -93,6 +97,24 @@ export const login = payload => async dispatch => {
 
         }
 
+};
+export const addMechanician=payload=>async dispatch=>{
+    dispatch(initAddMechanician());
+    try{
+        console.log(payload)
+        await cache.reset();
+        let data = (await ApolloClient().mutate({
+            mutation:GQL.ADD_MECHANICIAN,
+            variables:payload
+        })).data.addMechanician;
+        console.log(data)
+        dispatch(addMechanicianSuccess(data));
+
+    }catch (e) {
+        console.log(e.message)
+        let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
+        dispatch(addMechanicianError(errorNumber));
+    }
 };
 export const getStats = () => async dispatch => {;
     dispatch(initGetStats());
@@ -110,17 +132,17 @@ export const getStats = () => async dispatch => {;
 export const addClient=payload=>async dispatch=>{
     dispatch(initAddClient());
     try{
-        console.log(payload);
+
         await cache.reset();
         let data = (await ApolloClient().mutate({
             mutation:GQL.ADD_CLIENT,
             variables:payload
         })).data.addClient;
         dispatch(addClientSuccess(data));
-        console.log(data);
+
 
     }catch (e) {
-        console.log("graph ql ---"+e.message);
+
         let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
         dispatch(addClientError(errorNumber));
     }
@@ -156,7 +178,7 @@ export const getModelsByBrand=payload=>async dispatch=>{
     }
 };
 export const searchClient=payload=>async dispatch=>{
-    console.log(payload);
+
     dispatch(initSearchClient());
     try{
         await cache.reset();
@@ -165,7 +187,7 @@ export const searchClient=payload=>async dispatch=>{
             variables:payload
         })).data.searchClient;
         dispatch(searchClientSuccess(data))
-        console.log(data);
+
     }catch (e) {
         console.error(e);
         let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
@@ -175,14 +197,14 @@ export const searchClient=payload=>async dispatch=>{
 export const addCar=payload=>async dispatch=>{
     dispatch(initAddCar());
     try{
-        console.log(payload)
+
         await cache.reset();
         let data = (await ApolloClient().mutate({
             mutation:GQL.ADD_CAR,
             variables:payload
         })).data.addCar;
         dispatch(addCarSuccess(data));
-        console.log(data)
+
 
     }catch (e) {
          let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
@@ -192,7 +214,7 @@ export const addCar=payload=>async dispatch=>{
 
 
 export const searchCar=payload=>async dispatch=>{
-    console.log(payload);
+
     dispatch(initSearchCar());
     try{
         await cache.reset();
@@ -201,7 +223,7 @@ export const searchCar=payload=>async dispatch=>{
             variables:payload
         })).data.searchCar;
         dispatch(searchCarSuccess(data))
-        console.log(data);
+
     }catch (e) {
         console.error(e);
         let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
@@ -211,16 +233,14 @@ export const searchCar=payload=>async dispatch=>{
 export const addSheet=payload=>async dispatch=>{
     dispatch(initAddSheet());
     try{
-        console.log(payload)
+
         await cache.reset();
         let data = (await ApolloClient().mutate({
             mutation:GQL.ADD_SHEET,
             variables:payload
         })).data.addSheet;
         dispatch(addSheetSuccess(data));
-        console.log(data)
     }catch (e) {
-        console.log(e);
         let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
         dispatch(addSheetError(errorNumber));
     }
@@ -228,15 +248,12 @@ export const addSheet=payload=>async dispatch=>{
 export const addTask=payload=>async dispatch=>{
     dispatch(initAddTask());
     try{
-        console.log(payload);
         let data = (await ApolloClient().mutate({
             mutation:GQL.ADD_TASK,
             variables:payload
         })).data.addTask;
         dispatch(addTaskSuccess(data));
-        console.log(data);
     }catch (e) {
-        console.log(e);
         let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
         dispatch(addTaskError(errorNumber));
     }
@@ -260,6 +277,20 @@ export const getMechanicians=payload=>async dispatch=>{
             let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
             dispatch(getMechaniciansError(errorNumber));
         }
+    }
+};
+export const getTasks=payload=>async dispatch=>{
+    dispatch(initGetTasks());
+    try{
+        await cache.reset();
+        let data = (await ApolloClient().query({
+            query:GQL.GET_TASKS,
+            variables:payload
+        })).data.tasks;
+        dispatch(getTasksSuccess(data));
+    }catch (e) {
+        let errorNumber = parseInt(e.message.replace("GraphQL error: ",""));
+        dispatch(getTasksError(errorNumber));
     }
 };
 
